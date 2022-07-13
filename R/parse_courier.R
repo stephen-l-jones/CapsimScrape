@@ -7,7 +7,7 @@ parse_courier <- function (resp, industry, round) {
              "income_statement","human_resources"),
     cmpy_bond = c("bond_market"),
     cmpy_prod = c("production","perceptual_map"),
-    cmpy_prod_segm = c("segment_products","market_share")
+    prod_segm = c("segment_products","market_share")
   )
   data  <- list()
 
@@ -40,7 +40,7 @@ parse_courier <- function (resp, industry, round) {
     cmpy = courier_cmpy(data[names(data) %in% elem$cmpy], industry, round),
     cmpy_bond = courier_cmpy_bond(data[names(data) %in% elem$cmpy_bond], industry, round),
     cmpy_prod = courier_cmpy_prod(data[names(data) %in% elem$cmpy_prod], industry, round),
-    cmpy_prod_segm = courier_cmpy_prod_segm(data[names(data) %in% elem$cmpy_prod_segm], industry, round)
+    prod_segm = courier_prod_segm(data[names(data) %in% elem$prod_segm], industry, round)
   )
 
   cat("complete.\n")
@@ -145,7 +145,7 @@ parse_courier_table <- function(html_node) {
     return(list(segment_stats = parse_courier_segment_stats(html_node)))
   }
 
-  # Segment products (cmpy_prod_segm)
+  # Segment products (prod_segm)
   detected <- html_node %>%
     html_element("tr") %>%
     html_elements("td") %>%
@@ -166,7 +166,7 @@ parse_courier_table <- function(html_node) {
     return(list(market_share_title = parse_courier_market_share_title(html_node)))
   }
 
-  # Market share (cmpy_prod_segm)
+  # Market share (prod_segm)
   detected <- html_node %>%
     html_elements("th") %>%
     html_text2() %>%
@@ -370,7 +370,7 @@ parse_courier_production <- function (html_node) {
     mtbf                 = x[, "MTBF"] %>% format_to_numeric(),
     pfmn_coordinate      = x[, "Pfmn Coord"] %>% format_to_numeric(),
     size_coordinate      = x[, "Size Coord"] %>% format_to_numeric(),
-    product_price        = x[, "Price"] %>% format_to_numeric(),
+    unit_price           = x[, "Price"] %>% format_to_numeric(),
     material_cost        = x[, "Material Cost"] %>% format_to_numeric(),
     labor_cost           = x[, "Labor Cost"] %>% format_to_numeric(),
     contribution_margin  = x[, "Contr. Marg."] %>% format_to_numeric(),
@@ -584,13 +584,13 @@ courier_cmpy_prod <- function (data, industry, round) {
   data.frame(industry = industry, round = round, cmpy_prod)
 }
 
-courier_cmpy_prod_segm <- function (data, industry, round) {
+courier_prod_segm <- function (data, industry, round) {
   index <- which(names(data) %in% "segment_products")
   segment_products <- do.call(rbind, data[index])
   index <- which(names(data) %in% "market_share")
-  cmpy_prod_segm <- data[[index[1]]] %>%
+  prod_segm <- data[[index[1]]] %>%
     merge(data[[index[2]]], by = c("product_name","segment")) %>%
     merge(segment_products, by = c("product_name","segment"), all.x = TRUE)
-  rownames(cmpy_prod_segm) <- NULL
-  data.frame(industry = industry, round = round, cmpy_prod_segm)
+  rownames(prod_segm) <- NULL
+  data.frame(industry = industry, round = round, prod_segm)
 }

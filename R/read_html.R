@@ -1,12 +1,12 @@
 #' @export
 read_courier <- function (industry, round = "0") {
   round    <- as.character(round)
-  resp     <- CapsimScrape:::retrieve_courier(industry, round)
+  resp     <- retrieve_courier(industry, round)
   courier  <- list()
   for (i in names(resp)) {
     courier[[i]] <- list()
     for (r in names(resp[[i]])) {
-      courier[[i]][[r]] <- CapsimScrape:::parse_courier(
+      courier[[i]][[r]] <- parse_courier(
         resp[[i]][[r]],
         industry = i, round = r
       )
@@ -91,6 +91,6 @@ read_industry_companies <- function (industry) {
     stop(sprintf("Could not find companies for industry %s.", industry))
 
   company_table <- html_table(company_elem)
-  data.frame(company = names(company_table)[-1], status = unlist(company_table[1,-1]))
+  return(data.frame(company = names(company_table)[-1], status = unlist(company_table[1,-1])))
 }
 

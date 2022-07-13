@@ -2,9 +2,11 @@
 
 export(close_remote_driver)
 export(read_annual)
+export(read_capstone)
 export(read_courier)
 export(read_decision)
 export(read_industry_companies)
+import(data.table)
 import(httr2)
 import(magrittr)
 import(rvest)
