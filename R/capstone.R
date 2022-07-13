@@ -202,7 +202,7 @@ read_capstone <- function (
                  sum((dec_cust_survey + prior_dec_cust_survey)/2)) * unit_sales_segment
     ), by = list(industry, round, segment)]
 
-    if (!segment) {
+    if (!segment_level) {
       cmpy_prod <- cmpy_prod_segm[, list(
         value         = sum(value, na.rm = TRUE),
         is_sales      = is_sales[1],
